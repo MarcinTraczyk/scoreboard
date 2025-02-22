@@ -12,11 +12,13 @@ invalid_scores = [
 
 
 def test_initial_score_is_zero(sample_match):
+    """Ensure a newly created match starts with a 0:0 score."""
     assert sample_match.away_score == 0
     assert sample_match.home_score == 0
 
 
 def test_home_away_name_assigned_correctly(sample_match):
+    """Ensure the home/away teams are assigned in the correct order."""
     assert sample_match.home == 'Team A'
     assert sample_match.away == "Team B"
 
@@ -24,6 +26,7 @@ def test_home_away_name_assigned_correctly(sample_match):
 @pytest.mark.parametrize("invalid_score, description", invalid_scores,
                          ids=[desc for _, desc in invalid_scores])
 def test_invalid_home_score_raise_exception(invalid_score, description, sample_match):
+    """Check does the validation for the home team score works as expected, allowing only non-negative integers."""
     with pytest.raises(ValidationError):
         sample_match.home_score = invalid_score
 
@@ -31,6 +34,7 @@ def test_invalid_home_score_raise_exception(invalid_score, description, sample_m
 @pytest.mark.parametrize("invalid_score, description", invalid_scores,
                          ids=[desc for _, desc in invalid_scores])
 def test_invalid_away_score_raise_exception(invalid_score, description, sample_match):
+    """Check does the validation for the away team score works as expected, allowing only non-negative integers."""
     with pytest.raises(ValidationError):
         sample_match.away_score = invalid_score
 
@@ -42,6 +46,7 @@ def test_invalid_away_score_raise_exception(invalid_score, description, sample_m
     (10, 10, 20)
 ])
 def test_total_scores(home_score, away_score, total_score, sample_match):
+    """Verify the total score is calculated correctly."""
     sample_match.home_score = home_score
     sample_match.away_score = away_score
     assert sample_match.total_score == total_score

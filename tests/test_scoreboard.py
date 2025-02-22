@@ -5,15 +5,18 @@ from scoreboard.match import Match
 
 
 def test_initial_scoreboard_is_empty(sample_scoreboard):
+    """Ensure the newly instantiated scoreboard is empty."""
     assert len(sample_scoreboard) == 0
 
 
 def test_start_single_match(sample_scoreboard):
+    """Verify a match can be started, looking at the length of scoreboard."""
     sample_scoreboard.start_match("Team A", "Team B")
     assert len(sample_scoreboard) == 1
 
 
 def test_start_multiple_matches(sample_scoreboard):
+    """Verify multiple matches can be started, looking at the length of scoreboard."""
     for i in range(10):
         sample_scoreboard.start_match(f"Team A{i}", f"Team B{i}")
 
@@ -21,18 +24,21 @@ def test_start_multiple_matches(sample_scoreboard):
 
 
 def test_cannot_start_same_match_twice(sample_scoreboard):
+    """Ensure a match between the two same teams cannot be added twice."""
     sample_scoreboard.start_match("Team A", "Team B")
     with pytest.raises(ValueError):
         sample_scoreboard.start_match("Team A", "Team B")
 
 
 def test_cannot_start_match_for_a_home_team_already_playing(sample_scoreboard):
+    """Verify the home team cannot play in two matches simultaneously."""
     sample_scoreboard.start_match("Team A", "Team B")
     with pytest.raises(ValueError):
         sample_scoreboard.start_match("Team C", "Team B")
 
 
 def test_cannot_start_match_for_an_away_team_already_playing(sample_scoreboard):
+    """Verify the away team cannot play in two matches simultaneously."""
     sample_scoreboard.start_match("Team A", "Team B")
     with pytest.raises(ValueError):
         sample_scoreboard.start_match("Team A", "Team C")
@@ -44,12 +50,14 @@ def test_cannot_start_match_for_an_away_team_already_playing(sample_scoreboard):
     ("teAm A", "teAM b"),
 ])
 def test_team_name_capitalization_is_normalized_in_the_scoreboard(home_team, away_team, sample_scoreboard):
+    """Verify the away team cannot play in two matches simultaneously. Test case insensitivity."""
     sample_scoreboard.start_match("Team A", "Team B")
     with pytest.raises(ValueError):
         sample_scoreboard.start_match(home_team, away_team)
 
 
 def test_get_match(sample_scoreboard):
+    """Verify that a correct match is returned."""
     home_name = "Team A"
     away_name = "Team B"
     sample_scoreboard.start_match(home_name, away_name)
@@ -59,6 +67,8 @@ def test_get_match(sample_scoreboard):
 
 
 def test_get_match_in_reverse_order(sample_scoreboard):
+    """Verify that a correct match is returned, when teams are queried in the reversed order:
+      (home/away is queried as away/home)."""
     home_name = "Team A"
     away_name = "Team B"
     sample_scoreboard.start_match(away_name, home_name)
@@ -68,6 +78,7 @@ def test_get_match_in_reverse_order(sample_scoreboard):
 
 
 def test_get_match_from_longer_collection(sample_scoreboard):
+    """Verify that a correct match is returned when 10 matches are present in the scoreboard"""
     for i in range(10):
         sample_scoreboard.start_match(f"Team A{i}", f"Team B{i}")
     home_name = "Team A5"
@@ -78,6 +89,8 @@ def test_get_match_from_longer_collection(sample_scoreboard):
 
 
 def test_get_match_from_longer_collection_using_inconsistent_order(sample_scoreboard):
+    """Verify that a correct match is returned when 10 matches are present in the scoreboard,
+    when teams are queried in the reversed order: (home/away is queried as away/home)."""
     for i in range(10):
         sample_scoreboard.start_match(f"Team A{i}", f"Team B{i}")
     home_name = "Team A5"
@@ -88,6 +101,8 @@ def test_get_match_from_longer_collection_using_inconsistent_order(sample_scoreb
 
 
 def test_get_match_from_longer_collection_using_inconsistent_name_capitalization(sample_scoreboard):
+    """Verify that a correct match is returned when 10 matches are present in the scoreboard,
+    when teams are queried using inconsistent name capitalization."""
     for i in range(10):
         sample_scoreboard.start_match(f"Team A{i}", f"Team B{i}")
     home_name = "Team A5"
@@ -98,6 +113,7 @@ def test_get_match_from_longer_collection_using_inconsistent_name_capitalization
 
 
 def test_initial_score_is_zero(sample_scoreboard):
+    """Verify that a match start with a 0:0 score."""
     home_name = "Team A"
     away_name = "Team B"
     sample_scoreboard.start_match(home_name, away_name)
@@ -107,6 +123,7 @@ def test_initial_score_is_zero(sample_scoreboard):
 
 
 def test_update_match_score(sample_scoreboard):
+    """Verify that a match score can be updated."""
     home_name = "Team A"
     away_name = "Team B"
     sample_scoreboard.start_match(home_name, away_name)
@@ -118,6 +135,7 @@ def test_update_match_score(sample_scoreboard):
 
 
 def test_update_match_score_multiple_times(sample_scoreboard):
+    """Verify that a match score can be updated multiple times."""
     home_name = "Team A"
     away_name = "Team B"
     sample_scoreboard.start_match(home_name, away_name)
@@ -132,6 +150,7 @@ def test_update_match_score_multiple_times(sample_scoreboard):
 
 
 def test_update_match_score_from_longer_collection(sample_scoreboard):
+    """Verify that a match score can be updated when the scoreboard holds 10 matches."""
     for i in range(10):
         sample_scoreboard.start_match(f"Team A{i}", f"Team B{i}")
     home_name = "Team A5"
@@ -148,6 +167,7 @@ def test_update_match_score_from_longer_collection(sample_scoreboard):
 
 
 def test_update_match_score_from_longer_collection_does_not_affect_other_games(sample_scoreboard):
+    """Verify that updating a score of a single match, does not affect others."""
     for i in range(10):
         sample_scoreboard.start_match(f"Team A{i}", f"Team B{i}")
     home_name = "Team A5"
@@ -167,18 +187,20 @@ def test_update_match_score_from_longer_collection_does_not_affect_other_games(s
 
 
 def test_start_and_finish_single_match(sample_scoreboard):
+    """Ensure the match can be finished by looking at the scoreboard length."""
     sample_scoreboard.start_match("Team A", "Team B")
     sample_scoreboard.finish_match("Team A", "Team B")
     assert len(sample_scoreboard) == 0
 
 
 def test_cannot_finish_non_existing_match(sample_scoreboard):
+    """Ensure the match that does not exist in the scoreboard cannot be finished."""
     home_name = "Team A"
     away_name = "Team B"
     sample_scoreboard.start_match(home_name, away_name)
     with pytest.raises(ValueError):
         sample_scoreboard.finish_match("Team C", "Team D")
-    
+
     assert len(sample_scoreboard) == 1
     returned_match = sample_scoreboard.get_match(home_name, away_name)
     assert returned_match.home == home_name
@@ -186,9 +208,10 @@ def test_cannot_finish_non_existing_match(sample_scoreboard):
 
 
 def test_finish_all_matches_from_longer_collection(sample_scoreboard):
+    """Verify that a collection of 10 matches can be finished, reverting back to empty scoreboard. """
     for i in range(10):
         sample_scoreboard.start_match(f"Team A{i}", f"Team B{i}")
-    
+
     for i in range(10):
         sample_scoreboard.finish_match(f"Team A{i}", f"Team B{i}")
 
@@ -208,7 +231,7 @@ def test_default_match_ordering(sample_scoreboard):
     sample_scoreboard.update_match_score("Germany", "France", 2, 2)
     sample_scoreboard.update_match_score("Uruguay", "Italy", 6, 6)
     sample_scoreboard.update_match_score("Argentina", "Australia", 3, 1)
-    
+
     ordered_matches = sample_scoreboard.sort_matches()
 
     assert ordered_matches[0].home == "Uruguay"
@@ -236,10 +259,10 @@ def test_default_match_ordering_in_summary(sample_scoreboard):
     sample_scoreboard.update_match_score("Germany", "France", 2, 2)
     sample_scoreboard.update_match_score("Uruguay", "Italy", 6, 6)
     sample_scoreboard.update_match_score("Argentina", "Australia", 3, 1)
-    
+
     summary = sample_scoreboard.summary()
     summary_lines = summary.splitlines()
-    
+
     assert "Uruguay" in summary_lines[0]
     assert "Italy" in summary_lines[0]
     assert "6:6" in summary_lines[0]
@@ -260,7 +283,7 @@ def test_default_match_ordering_in_summary(sample_scoreboard):
 def test_use_text_ellipsis_in_summary_when_too_long(sample_scoreboard):
     for i in range(1000):
         sample_scoreboard.start_match(f"Team A{i}", f"Team B{i}")
-    
+
     summary = sample_scoreboard.summary()
     summary_lines = summary.splitlines()
 
@@ -268,7 +291,7 @@ def test_use_text_ellipsis_in_summary_when_too_long(sample_scoreboard):
     assert "(...)" in summary_lines[-1]
 
 
-def test_default_match_ordering(sample_scoreboard):
+def test_alphanumeric_match_ordering(sample_scoreboard):
     """Ensure matches are sorted correctly by the home team name in alphanumeric order."""
     sample_scoreboard.start_match("Mexico", "Canada")
     sample_scoreboard.start_match("Spain", "Brazil")
@@ -281,7 +304,7 @@ def test_default_match_ordering(sample_scoreboard):
     sample_scoreboard.update_match_score("Germany", "France", 2, 2)
     sample_scoreboard.update_match_score("Uruguay", "Italy", 6, 6)
     sample_scoreboard.update_match_score("Argentina", "Australia", 3, 1)
-    
+
     ordered_matches = sample_scoreboard.sort_matches(MatchSorter.ALPHANUMERIC_HOME_TEAM)
 
     assert ordered_matches[0].home == "Argentina"
@@ -296,7 +319,7 @@ def test_default_match_ordering(sample_scoreboard):
     assert ordered_matches[4].away == "Italy"
 
 
-
-
-    
-    
+def test_empty_summary_can_be_returned(sample_scoreboard):
+    """Test the example specificy given in the requirements."""
+    summary = sample_scoreboard.summary()
+    assert summary == ""

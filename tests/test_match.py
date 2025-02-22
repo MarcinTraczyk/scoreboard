@@ -56,10 +56,10 @@ def test_home_away_team_name_validation():
     """Verify exception is thrown when either home or away team name is not provided."""
     with pytest.raises(ValidationError):
         Match()
-    
+
     with pytest.raises(ValidationError):
         Match(home="Team A")
-    
+
     with pytest.raises(ValidationError):
         Match(away="Team B")
 

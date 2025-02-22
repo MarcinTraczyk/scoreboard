@@ -5,14 +5,26 @@ from .match_sorter import MatchSorter
 
 class Scoreboard:
     def __init__(self):
+        # A dict to store all ongoing matches.
         self.matches: Dict[str, Match] = {}
-        self.teams: List[str] = []
+        # A list of teams that
+        self.teams: List[str] = set()
         self.order_counter: int = 0
         self._home_color = '\x1b[5;30;46m'
         self._away_color = '\x1b[6;30;42m'
         self._color_end = '\x1b[0m'
 
     def _team_names_to_key(self, home_team: str, away_team: str) -> str:
+        """Return a dictionary key for a match, based on home / away team names,
+        to use in the self.matches dictionary.
+
+        Args:
+            home_team (str): Home team name.
+            away_team (str): Away team name
+
+        Returns:
+            str: A string key to be used in the self.matches dict.
+        """
         return f"{home_team.lower()}_{away_team.lower()}"
     
     def __len__(self):
@@ -32,7 +44,8 @@ class Scoreboard:
 
         m.order_started = self.order_counter
         self.order_counter += 1
-        self.teams += [home_team.lower(), away_team.lower()]
+        self.teams.add(home_team.lower())
+        self.teams.add(away_team.lower())
 
         self.matches[key] = m
 
@@ -60,6 +73,8 @@ class Scoreboard:
         key = self._team_names_to_key(team_a, team_b)
         if key in self.matches:
             del self.matches[key]
+            self.teams.remove(team_a.lower())
+            self.teams.remove(team_b.lower())
             return
         
         # In an order-sensitive case, raise an exception on a key not found.

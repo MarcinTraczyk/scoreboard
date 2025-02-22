@@ -323,3 +323,10 @@ def test_empty_summary_can_be_returned(sample_scoreboard):
     """Test the example specificy given in the requirements."""
     summary = sample_scoreboard.summary()
     assert summary == ""
+
+
+def test_can_add_the_same_team_after_it_was_removed_from_the_scoreboard(sample_scoreboard):
+    """Ensure a match between the two same teams cannot be added twice."""
+    sample_scoreboard.start_match("Team A", "Team B")
+    sample_scoreboard.finish_match("Team A", "Team B")
+    sample_scoreboard.start_match("Team A", "Team B")

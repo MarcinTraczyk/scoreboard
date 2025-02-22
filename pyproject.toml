@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "scoreboard"
+version = "0.1.0"
+description = "Simple scoreboard library."
+authors = ["Marcin Traczyk <marcin.traczyk.88@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.10.6"
+pytest = "^8.3.4"
+flake8 = "^7.1.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

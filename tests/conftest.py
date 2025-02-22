@@ -1,5 +1,6 @@
 import pytest
 from scoreboard.match import Match
+from scoreboard.scoreboard import Scoreboard
 
 
 @pytest.fixture
@@ -18,3 +19,9 @@ def sample_matches():
         Match(home="Team G", away="Team H"),
         Match(home="Team I", away="Team J"),
     ]
+
+
+@pytest.fixture
+def sample_scoreboard():
+    """Returns a single Match instance."""
+    return Scoreboard()

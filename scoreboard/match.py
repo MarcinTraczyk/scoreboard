@@ -9,6 +9,8 @@ class Match(BaseModel):
     away: str
     home_score: conint(ge=0, lt=MAX_TEAM_GOALS) = 0
     away_score: conint(ge=0, lt=MAX_TEAM_GOALS) = 0
+    # Ordering integer added for easier sorting on the Scoreboard.
+    order_started: int | None = None
 
     # Modify the pydantic config, so the validations are run on field assignments.
     model_config = ConfigDict(validate_assignment=True)

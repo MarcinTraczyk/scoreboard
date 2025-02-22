@@ -51,7 +51,7 @@ def test_cannot_start_match_for_an_away_team_already_playing(sample_scoreboard):
 ])
 def test_team_name_capitalization_is_normalized_in_the_scoreboard(home_team, away_team, sample_scoreboard):
     """Verify the away team cannot play in two matches simultaneously. Test case insensitivity."""
-    sample_scoreboard.start_match("Team A", "Team B")
+    sample_scoreboard.start_match(home_team, away_team)
     with pytest.raises(ValueError):
         sample_scoreboard.start_match(home_team, away_team)
 
@@ -71,8 +71,8 @@ def test_get_match_in_reverse_order(sample_scoreboard):
       (home/away is queried as away/home)."""
     home_name = "Team A"
     away_name = "Team B"
-    sample_scoreboard.start_match(away_name, home_name)
-    returned_match = sample_scoreboard.get_match(home_name, away_name)
+    sample_scoreboard.start_match(home_name, away_name)
+    returned_match = sample_scoreboard.get_match(away_name, home_name)
     assert returned_match.home == home_name
     assert returned_match.away == away_name
 

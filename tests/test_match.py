@@ -50,3 +50,14 @@ def test_total_scores(home_score, away_score, total_score, sample_match):
     sample_match.home_score = home_score
     sample_match.away_score = away_score
     assert sample_match.total_score == total_score
+
+def test_home_away_team_name_validation():
+    """Verify exception is thrown when either home or away team name is not provided."""
+    with pytest.raises(ValidationError):
+        Match()
+    
+    with pytest.raises(ValidationError):
+        Match(home="Team A")
+    
+    with pytest.raises(ValidationError):
+        Match(away="Team B")

@@ -1,5 +1,6 @@
-from .match import Match
 from typing import Dict, List
+from .match import Match
+from .match_sorter import MatchSorter
 
 
 class Scoreboard:
@@ -65,5 +66,7 @@ class Scoreboard:
         # In an order-insensitive case, repeat the search in the reversed home / away order.
         return self.finish_match(team_a=team_b, team_b=team_a, order_sensitive=True)
 
+    def sort_matches(self, sorter: MatchSorter = MatchSorter.GOALS_TOTAL) -> List[Match]:
+        return sorted(self.matches.values(), key=sorter)
     
 

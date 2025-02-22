@@ -44,7 +44,7 @@ def test_cannot_start_match_for_an_away_team_already_playing(sample_scoreboard):
         sample_scoreboard.start_match("Team A", "Team C")
 
 
-@pytest.mark.parametrize("home_team", "away_team", [
+@pytest.mark.parametrize(("home_team", "away_team"), [
     ("team a", "Team B"),
     ("Team A", "team b"),
     ("teAm A", "teAM b"),

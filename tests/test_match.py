@@ -23,7 +23,7 @@ def test_home_away_name_assigned_correctly(sample_match):
     assert sample_match.away == "Team B"
 
 
-@pytest.mark.parametrize("invalid_score, description", invalid_scores,
+@pytest.mark.parametrize(("invalid_score, description"), invalid_scores,
                          ids=[desc for _, desc in invalid_scores])
 def test_invalid_home_score_raise_exception(invalid_score, description, sample_match):
     """Check does the validation for the home team score works as expected, allowing only non-negative integers."""
@@ -31,7 +31,7 @@ def test_invalid_home_score_raise_exception(invalid_score, description, sample_m
         sample_match.home_score = invalid_score
 
 
-@pytest.mark.parametrize("invalid_score, description", invalid_scores,
+@pytest.mark.parametrize(("invalid_score, description"), invalid_scores,
                          ids=[desc for _, desc in invalid_scores])
 def test_invalid_away_score_raise_exception(invalid_score, description, sample_match):
     """Check does the validation for the away team score works as expected, allowing only non-negative integers."""
@@ -39,7 +39,7 @@ def test_invalid_away_score_raise_exception(invalid_score, description, sample_m
         sample_match.away_score = invalid_score
 
 
-@pytest.mark.parametrize("home_score", "away_score", "total_score", [
+@pytest.mark.parametrize(("home_score", "away_score", "total_score"), [
     (0, 0, 0),
     (1, 1, 2),
     (0, 3, 3),

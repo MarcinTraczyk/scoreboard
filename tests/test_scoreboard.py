@@ -265,19 +265,19 @@ def test_default_match_ordering_in_summary(sample_scoreboard):
 
     assert "Uruguay" in summary_lines[0]
     assert "Italy" in summary_lines[0]
-    assert "6:6" in summary_lines[0]
+    assert "06:06" in summary_lines[0]
     assert "Spain" in summary_lines[1]
     assert "Brazil" in summary_lines[1]
-    assert "10:2" in summary_lines[1]
+    assert "10:02" in summary_lines[1]
     assert "Mexico" in summary_lines[2]
     assert "Canada" in summary_lines[2]
-    assert "0:5" in summary_lines[2]
+    assert "00:05" in summary_lines[2]
     assert "Argentina" in summary_lines[3]
     assert "Australia" in summary_lines[3]
-    assert "3:1" in summary_lines[3]
+    assert "03:01" in summary_lines[3]
     assert "Germany" in summary_lines[4]
     assert "France" in summary_lines[4]
-    assert "2:2" in summary_lines[4]
+    assert "02:02" in summary_lines[4]
 
 
 def test_use_text_ellipsis_in_summary_when_too_long(sample_scoreboard):

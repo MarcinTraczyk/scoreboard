@@ -32,10 +32,10 @@ class Scoreboard:
 
         self.matches[key] = m
 
-    def get_match(self, home_team: str, away_team: str, order_sensitive: bool=False) -> Match:
+    def get_match(self, team_a: str, team_b: str, order_sensitive: bool=False) -> Match:
         
         # Look for key in the match dictionary.
-        key = self._team_names_to_key(home_team, away_team)
+        key = self._team_names_to_key(team_a, team_b)
         if key in self.matches:
             return self.matches[key]
         
@@ -44,6 +44,26 @@ class Scoreboard:
             raise ValueError("Match does not exist on the scoreboard.")
         
         # In an order-insensitive case, repeat the search in the reversed home / away order.
-        return self.get_match(away_team=home_team, home_team=away_team, order_sensitive=True)
+        return self.get_match(team_a=team_b, team_b=team_a, order_sensitive=True)
+    
+    def update_match_score(self, home_team: str, away_team: str, home_score: int, away_score: int):
+        m = self.get_match(team_a=home_team, team_b=away_team, order_sensitive=True)
+        m.home_score = home_score
+        m.away_score = away_score
+
+    def finish_match(self, team_a: str, team_b: str, order_sensitive:bool = False):
+        # Look for key in the match dictionary.
+        key = self._team_names_to_key(team_a, team_b)
+        if key in self.matches:
+            del self.matches[key]
+            return
+        
+        # In an order-sensitive case, raise an exception on a key not found.
+        if order_sensitive:
+            raise ValueError("Match does not exist on the scoreboard.")
+        
+        # In an order-insensitive case, repeat the search in the reversed home / away order.
+        return self.finish_match(team_a=team_b, team_b=team_a, order_sensitive=True)
+
     
 

@@ -51,6 +51,7 @@ def test_total_scores(home_score, away_score, total_score, sample_match):
     sample_match.away_score = away_score
     assert sample_match.total_score == total_score
 
+
 def test_home_away_team_name_validation():
     """Verify exception is thrown when either home or away team name is not provided."""
     with pytest.raises(ValidationError):
@@ -61,3 +62,17 @@ def test_home_away_team_name_validation():
     
     with pytest.raises(ValidationError):
         Match(away="Team B")
+
+
+def test_home_team_cannot_be_the_same_as_away_team():
+    """Verify exception is thrown when away and home team names are the same."""
+
+    with pytest.raises(ValidationError):
+        Match(home="Team A", away="Team A")
+
+
+def test_home_team_cannot_be_the_same_as_away_team_case_insensitive():
+    """Verify exception is thrown when away and home team names are the same. Case insensitive. """
+
+    with pytest.raises(ValidationError):
+        Match(home="Team A", away="teAM a")

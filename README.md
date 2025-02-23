@@ -63,6 +63,17 @@ This is the example provided in the requirements. The output is:
 This is the example provided in the requirements, with output format adjusted in the script. The output is:
 ![adjusted_formatting_result](img/adjusted_formatting.png)
 
+# Tests:
+
+Tests are written with `pytest`. You can run them by typing pytest in the active virtual environment:
+```bash
+pytest
+```
+
+The output should look like this:
+![pytest output](img/pytest.png)
+
+
 # Assumptions:
 
 - Matches can only have non-negative integer scores

@@ -1,3 +1,11 @@
+
+# Scripts
+
+### test_scoreboard.py
+
+This is the example provided in the requirements. The output is:
+![requirements_example_result](img/requirements_example.png)
+
 # Assumptions:
 
 - Matches can only have non-negative integer scores

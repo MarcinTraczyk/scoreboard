@@ -189,13 +189,12 @@ class Scoreboard:
 
         return matches_to_print, add_ellipsis
 
-
     def _match_printer(
-            self,
-            match: Match,
-            column_width: int,
-            pretty: bool=False
-        ):
+        self,
+        match: Match,
+        column_width: int,
+        pretty: bool = False
+    ):
         """Add colors to the basic printer function.
 
         Args:
@@ -213,8 +212,8 @@ class Scoreboard:
         # Make sure the team name does not overflow the column.
         max_str_length = column_width - self.COLUMN_PADDING
         # The magic "-3" is for the length of ellipsis suffix.
-        home_display_name = match.home if  len(match.home) < max_str_length else match.home[:max_str_length - 3] + "..."
-        away_display_name = match.away if  len(match.away) < max_str_length else match.away[:max_str_length - 3] + "..."
+        home_display_name = match.home if len(match.home) < max_str_length else match.home[:max_str_length - 3] + "..."
+        away_display_name = match.away if len(match.away) < max_str_length else match.away[:max_str_length - 3] + "..."
 
         if pretty:
             match_line = self._home_color + f"{home_display_name:<{column_width}}{home_score_str}" + self._color_end
@@ -276,7 +275,7 @@ class Scoreboard:
         # summary line. It's added for consistent width.
         return "-" * (2 * column_width + 7) + "\n"
 
-    def summary(self, pretty=False, max_lines: int|None = None, start_from: int=0) -> str:
+    def summary(self, pretty=False, max_lines: int | None = None, start_from: int = 0) -> str:
         """Return the summary string.
 
         Args:

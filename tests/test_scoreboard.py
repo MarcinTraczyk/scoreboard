@@ -336,7 +336,7 @@ def test_very_long_team_name_truncated_on_summary(sample_scoreboard):
     """Ensure a very long team name gets truncated on the summary and does not overflow the screen."""
     team_a = "Team " + "".join(["A"] * 1000)
     team_b = "Team " + "".join(["B"] * 1000)
-    
+
     sample_scoreboard.start_match(team_a, team_b)
     summary = sample_scoreboard.summary().splitlines()
     # The 120 characters easily fill on most computer screens.

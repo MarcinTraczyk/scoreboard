@@ -5,6 +5,14 @@ from sys import platform
 
 
 class Scoreboard:
+    MAX_SUMMARY_LINES: int = 20
+    COLUMN_PADDING: int = 2
+    MIN_COLUMN_WIDTH: int = 10
+    MAX_COLUMN_WIDTH: int = 50
+    HOME_HEADER: str = "HOME"
+    AWAY_HEADER: str = "AWAY"
+    TABLE_ELLIPSIS: str = "(...)\n"
+
     def __init__(self):
         # A dict to store all ongoing matches.
         self.matches: Dict[str, Match] = {}
@@ -55,6 +63,8 @@ class Scoreboard:
 
         # Increase the order counter used for secondary sorting.
         m.order_started = self.order_counter
+        # In theory we should reset it at some point, but it does not seem like
+        # the integer overflow is something we should worry about at this stage.
         self.order_counter += 1
 
         # Add both teams to the list of teams already engaged in a scoreboard game.
@@ -179,21 +189,13 @@ class Scoreboard:
 
         return matches_to_print, add_ellipsis
 
-    def _basic_match_printer(self, match: Match, column_width: int) -> str:
-        """Basic print of a match instance.
 
-        Args:
-            match (Match): Match instance to convert to string.
-            column_width (int): Column width to use for home / away halves of the string.
-
-        Returns:
-            str: A string in a "team A  2:3  team B" format.
-        """
-        match_line = f"{match.home:<{column_width}} {match.home_score:02d}:"
-        match_line += f"{match.away_score:02d} {match.away:>{column_width}}\n"
-        return match_line
-
-    def _pretty_match_printer(self, match: Match, column_width: int):
+    def _match_printer(
+            self,
+            match: Match,
+            column_width: int,
+            pretty: bool=False
+        ):
         """Add colors to the basic printer function.
 
         Args:
@@ -203,13 +205,31 @@ class Scoreboard:
         Returns:
             str: A string in a "team A  2:3  team B" format. With two different colors for the home / away halves.
         """
-        match_line = self._home_color + f"{match.home:<{column_width}} {match.home_score:02d}" + self._color_end
-        match_line += ":"
-        match_line += self._away_color + f"{match.away_score:02d} {match.away:>{column_width}}" + self._color_end
-        match_line += "\n"
+        # We allow for at most 3-digit scores, but the usual score formating is 2 digits with leading zeros.
+        # Adjust the score string to have the same length in both scenarios.
+        home_score_str = f" {match.home_score:02d}" if match.home_score < 100 else f"{match.home_score:03d}"
+        away_score_str = f"{match.away_score:02d} " if match.away_score < 100 else f"{match.away_score:03d}"
+
+        # Make sure the team name does not overflow the column.
+        max_str_length = column_width - self.COLUMN_PADDING
+        # The magic "-3" is for the length of ellipsis suffix.
+        home_display_name = match.home if  len(match.home) < max_str_length else match.home[:max_str_length - 3] + "..."
+        away_display_name = match.away if  len(match.away) < max_str_length else match.away[:max_str_length - 3] + "..."
+
+        if pretty:
+            match_line = self._home_color + f"{home_display_name:<{column_width}}{home_score_str}" + self._color_end
+            match_line += ":"
+            match_line += self._away_color + f"{away_score_str}{away_display_name:>{column_width}}" + self._color_end
+            match_line += "\n"
+        else:
+            match_line = f"{home_display_name:<{column_width}}{home_score_str}"
+            match_line += ":"
+            match_line += f"{away_score_str}{away_display_name:>{column_width}}"
+            match_line += "\n"
+
         return match_line
 
-    def _get_column_width(self, matches: List[Match], padding=5) -> int:
+    def _get_column_width(self, matches: List[Match]) -> int:
         """Calculates column width for the home / away halves of the summary string.
 
         Args:
@@ -221,7 +241,9 @@ class Scoreboard:
         """
         max_home_name_length = max((len(match.home) for match in matches), default=0)
         max_away_name_length = max((len(match.away) for match in matches), default=0)
-        return max([max_home_name_length, max_away_name_length]) + padding
+        max_name_length = max([max_home_name_length, max_away_name_length, self.MIN_COLUMN_WIDTH])
+
+        return min(max_name_length, self.MAX_COLUMN_WIDTH) + self.COLUMN_PADDING
 
     def _get_summary_header(self, column_width: int) -> str:
         """Adds a simple header to the summary table.
@@ -232,10 +254,12 @@ class Scoreboard:
         Returns:
             str: Header string in a "HOME   |   AWAY\n-----------" format.
         """
-        home_header = "HOME"
-        away_header = "AWAY"
+        home_header = self.HOME_HEADER
+        away_header = self.AWAY_HEADER
         header_line = self._home_color + f"{home_header:<{column_width}}   " + self._color_end + "|"
         header_line += self._away_color + f"   {away_header:>{column_width}}" + self._color_end + "\n"
+        # The magic "7" is the total width of extra characters (whitespaces and ":") present in each
+        # summary line. It's added for consistent width.
         header_line += "-" * (2 * column_width + 7) + "\n"
         return header_line
 
@@ -248,9 +272,11 @@ class Scoreboard:
         Returns:
             str: String containing only "-", spanning the table width.
         """
+        # The magic "7" is the total width of extra characters (whitespaces and ":") present in each
+        # summary line. It's added for consistent width.
         return "-" * (2 * column_width + 7) + "\n"
 
-    def summary(self, pretty=False, max_lines=20, start_from=0) -> str:
+    def summary(self, pretty=False, max_lines: int|None = None, start_from: int=0) -> str:
         """Return the summary string.
 
         Args:
@@ -263,10 +289,12 @@ class Scoreboard:
         """
         summary_string = ""
 
+        if max_lines is None:
+            max_lines = self.MAX_SUMMARY_LINES
+
         # Select matches to include in the summary. Max lines and start_from can be used to implement pagination.
         matches, ellipsis = self._get_matches_for_summary(max_lines, start_from)
         # Column width for both halves (home / away) of the table. Based on the longest team name.
-        # TODO: what if the name is veeery long?
         col_width = self._get_column_width(matches)
 
         # Make sure the platform is linux, for command line colors.
@@ -278,12 +306,12 @@ class Scoreboard:
             summary_string += self._get_summary_header(col_width)
         for m in matches:
             if pretty and is_linux:
-                summary_string += self._pretty_match_printer(m, col_width)
+                summary_string += self._match_printer(m, col_width, pretty=True)
             else:
-                summary_string += self._basic_match_printer(m, col_width)
+                summary_string += self._match_printer(m, col_width)
 
         if ellipsis:
-            summary_string += "(...)\n"
+            summary_string += self.TABLE_ELLIPSIS
         if pretty and is_linux:
             summary_string += self._get_summary_footer(col_width)
         return summary_string

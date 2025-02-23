@@ -1,10 +1,15 @@
 
 # Scripts
 
-### test_scoreboard.py
+### scripts/requirements_example.py
 
 This is the example provided in the requirements. The output is:
 ![requirements_example_result](img/requirements_example.png)
+
+### scripts/adjusted_formatting.py 
+
+This is the example provided in the requirements, with output format adjusted in the script. The output is:
+![adjusted_formatting_result](img/adjusted_formatting.png)
 
 # Assumptions:
 
@@ -15,3 +20,4 @@ This is the example provided in the requirements. The output is:
 - Despite the requirements specifying that match results should be reported in the "Argentina 3 - Australia 1" format, I decided to output them in a slighly more familiar "Argentina 3:1 Australia" format. This was a conscious decisionand and can be easily reverted if not accepted by the project owner. ;)
 - Since, the summary of current matches is returned as a string, there should be an upper limit on the number of lines to ensure readability. We can assume a 20, as it seems to be a lower limit for CLI apps. To retrieve all current matches from the scoreboard, we could implement pagination. For example, `summary(max_lines=20, paginate=True)` could return a list of 20-line strings or `summary(max_lines=20, start_from=60)` for a single 20-line long string starting from the 60th match record.
 - I considered enforcing a rule to prevent lowering the score of an ongoing match but realized it can happen. For example, a referee might invalidate a goal after reviewing VAR. If any form of rule enforcement is to be implemented here, it would require careful consideration.
+- I decided to use static class members for customization (display column widths etc). It would be nicer to move them to a config class, but I feel like simple is better here.
